@@ -38,6 +38,7 @@ def team_optimizer(
     allow_multiple_starters=False,
     in_team=[],
     out_team=[],
+    captured=None,
     show_resistances=False,
 ):
     # Load the dataset
@@ -49,6 +50,9 @@ def team_optimizer(
     # Limit the Pokemons to belong in the generation list
     if len(gens) > 0:
         pkms = pkms.loc[pkms["generation"].isin(gens)]
+    # Limit the Pokemons to the ones already captured
+    if captured:
+        pkms = pkms.loc[pkms["name"].isin(captured)]
 
     # Choose the right types for each generation game
     list_types = config.list_types_columns
@@ -98,12 +102,13 @@ def team_optimizer(
     team = optimize_team_weakness_improved(
         pkms, list_types, size_team=size_team, in_team=in_team_idx, out_team=out_team_idx
     )
-    if team is not None:
-        print("The optimal team is composed of")
-        print(f"{team[['name', 'type1', 'type2']].set_index('name').fillna('none')}")
-        if show_resistances:
-            print("\nThe optimal resistances are:")
-            print(present_solution_weaknesses(team, list_types)[["min_val", "min_pkmn"]])
+    if team is None:
+        return None, None
+    print("The optimal team is composed of")
+    print(f"{team[['name', 'type1', 'type2']].set_index('name').fillna('none')}")
+    if show_resistances:
+        print("\nThe optimal resistances are:")
+        print(present_solution_weaknesses(team, list_types)[["min_val", "min_pkmn"]])
     return team, present_solution_weaknesses(team, list_types)
 
 
@@ -153,6 +158,9 @@ parser.add_argument(
 parser.add_argument("-i", "--include", nargs="+", help="Pokemon to include", default=[], dest="in_team")
 parser.add_argument("-e", "--exclude", nargs="+", help="Pokemon to exclude", default=[], dest="out_team")
 parser.add_argument(
+    "-c", "--captured", nargs="+", help="Captured Pokemon to build the team from", default=[], dest="captured"
+)
+parser.add_argument(
     "--show-resistances", help="Show resistance table in the output", action="store_true", dest="show_resistances"
 )
 
@@ -169,5 +177,6 @@ if __name__ == "__main__":
         fossils=args.fossils,
         in_team=args.in_team,
         out_team=args.out_team,
+        captured=args.captured,
         show_resistances=args.show_resistances,
     )

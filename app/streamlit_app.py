@@ -39,6 +39,10 @@ size_team = st.sidebar.number_input("Size of the team: ", min_value=1, max_value
 gens = st.sidebar.multiselect("What generations should be included (empty means all)?", range(1, config.NGENS + 1))
 in_team = st.sidebar.multiselect("Pokemon to include:", all_pkmn_names)
 out_team = st.sidebar.multiselect("Pokemon to exclude:", all_pkmn_names)
+captured = st.sidebar.multiselect(
+    "Captured Pokemon to build the team from (empty means all):",
+    pd.read_csv(config.get_file_loc(version))["name"],
+)
 
 
 if st.button("Solve"):
@@ -54,11 +58,13 @@ if st.button("Solve"):
             allow_multiple_starters=starters,
             in_team=in_team,
             out_team=out_team,
+            captured=captured,
         )
-        team = team.rename(columns={"name": "Pokemon", "type1": "Type 1", "type2": "Type 2"})
-        resistances = resistances.rename(
-            index={0: "Type"}, columns={"min_val": "Minimal factor", "min_pkmn": "Optimal defender"}
-        )
+        if team is not None:
+            team = team.rename(columns={"name": "Pokemon", "type1": "Type 1", "type2": "Type 2"})
+            resistances = resistances.rename(
+                index={0: "Type"}, columns={"min_val": "Minimal factor", "min_pkmn": "Optimal defender"}
+            )
     except ValueError:
         team = None
 
