@@ -36,7 +36,7 @@ notebooks = [
     "seaborn>=0.11",
 ]
 dev = [
-    "black>=24",
+    "black[jupyter]>=24",
     "isort>=5.12",
     "pylint>=3",
 ]
