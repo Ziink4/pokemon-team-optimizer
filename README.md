@@ -7,13 +7,13 @@ This project is about finding optimal Pokemon teams using optimization solvers a
 
 **DEMO**: View streamlit app.
 
-The main idea is to express in mathematical terms (see [this notebook](TeamOptimization.ipynb) for an explanation of the method) the following constraints for an optimal team:
+The main idea is to express in mathematical terms (see [this notebook](notebooks/TeamOptimization.ipynb) for an explanation of the method) the following constraints for an optimal team:
 1. A team should have 6 Pokemon (flexible).
 2. A team should not have more than 1 starter Pokemon (flexible).
 3. The base total of the whole team should be maximized.
 4. For each type, there should be at least one Pokemon in the team which resists attacks from that type.
 
-That last constraint is the most complicated to implement and required tuning (once again see [the notebook](TeamOptimization.ipynb) for more details). Some of the constraints can be parameterized such as the size of the team, the presence of multiple starters, the inclusion of (pseudo-)legendaries, fossils and finally the explicit inclusion of some Pokemon.
+That last constraint is the most complicated to implement and required tuning (once again see [the notebook](notebooks/TeamOptimization.ipynb) for more details). Some of the constraints can be parameterized such as the size of the team, the presence of multiple starters, the inclusion of (pseudo-)legendaries, fossils and finally the explicit inclusion of some Pokemon.
 
 **Other features:**
 - Possibility to select/remove (pseudo-)legendaries (ultra beasts are counted as legendaries for this purpose), fossils.
@@ -23,9 +23,18 @@ That last constraint is the most complicated to implement and required tuning (o
 
 ## How to use
 
-You can clone this repository and find the optimized team by using
+Clone this repository and install it (Python 3.10+):
 ```console
-usage: main.py [-h] [--generation-cap GEN_CAP | -g GENS [GENS ...]] [-v {rby,gsc,rse,frlg,dp,plat,hgss,bw,bw2,xy,oras,sm,usum,swsh,bdsp,sv,nat}]
+$ pip install -e .            # CLI only
+$ pip install -e ".[app]"     # + Streamlit app
+$ pip install -e ".[notebooks]"  # + dependencies for the notebooks
+```
+
+Run the Streamlit app locally with `streamlit run app/streamlit_app.py`.
+
+Find the optimized team with `python3 -m pokemon_team_optimizer.cli`:
+```console
+usage: cli.py [-h] [--generation-cap GEN_CAP | -g GENS [GENS ...]] [-v {rby,gsc,rse,frlg,dp,plat,hgss,bw,bw2,xy,oras,sm,usum,swsh,bdsp,sv,nat}]
                [--size-team SIZE_TEAM] [--include-legendaries] [--allow-starters] [-f {all,one,none}] [--include-pseudo-legendaries] [-i IN_TEAM [IN_TEAM ...]]
                [-e OUT_TEAM [OUT_TEAM ...]] [--show-resistances]
 
@@ -59,7 +68,7 @@ options:
 
 To find an optimal team for Red-Blue-Yellow, you can run
 ```console
-$ python3 main.py -v rby --show-resistances
+$ python3 -m pokemon_team_optimizer.cli -v rby --show-resistances
 Success!
 The optimal team is composed of
             type1    type2
@@ -90,7 +99,7 @@ against_grass        0.50   arcanine
 ```
 The first part of the output is the optimal team while the second part shows the optimal Pokemon which resists each type. Focusing on the first output, we can see what happens if we allow legendaries up to gen VI
 ```console
-$ python3 main.py -g 6 --include-legendaries
+$ python3 -m pokemon_team_optimizer.cli -g 6 --include-legendaries
 Success!
 The optimal team is composed of
            type1   type2
@@ -118,7 +127,7 @@ blissey      normal    none
 
 Finally, if you want to complete your current team, you can also just do
 ```console
-$ python3 main.py -v gsc -i typhlosion xatu
+$ python3 -m pokemon_team_optimizer.cli -v gsc -i typhlosion xatu
 Success!
 The optimal team is composed of
               type1   type2

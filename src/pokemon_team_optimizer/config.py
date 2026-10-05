@@ -1,8 +1,6 @@
 from pathlib import Path
 
-from pyprojroot.here import here
-
-path_root_folder = here()
+path_root_folder = Path(__file__).resolve().parents[2]
 path_data = path_root_folder / "data"
 path_data_games = path_data / "games"
 path_latest_file = path_data / "pokemon_starter_pl_fossil.csv"

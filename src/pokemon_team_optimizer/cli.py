@@ -1,8 +1,8 @@
 import pandas as pd
 import pulp
 import argparse
-from src.optimizer import optimize_team_weakness_improved
-from src import config
+from pokemon_team_optimizer.optimizer import optimize_team_weakness_improved
+from pokemon_team_optimizer import config
 
 
 def present_solution_weaknesses(team, types):

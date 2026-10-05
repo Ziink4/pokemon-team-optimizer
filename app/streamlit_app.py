@@ -1,6 +1,6 @@
 import streamlit as st
-import main
-from src import config
+from pokemon_team_optimizer import cli
+from pokemon_team_optimizer import config
 import pandas as pd
 
 
@@ -46,7 +46,7 @@ out_team = st.sidebar.multiselect("Pokemon to exclude:", all_pkmn_names)
 
 if st.button("Solve"):
     try:
-        team, resistances = main.team_optimizer(
+        team, resistances = cli.team_optimizer(
             gen_cap=None,
             gens=gens,
             version=version,
