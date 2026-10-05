@@ -1,7 +1,6 @@
 import argparse
 
 import pandas as pd
-import pulp
 
 from pokemon_team_optimizer import config
 from pokemon_team_optimizer.optimizer import optimize_team_weakness_improved

@@ -1,4 +1,3 @@
-import pandas as pd
 import pulp
 
 error_codes = {1: "optimal", 0: "not solved", -1: "unfeasible", -2: "unbounded", -3: "undefined"}
