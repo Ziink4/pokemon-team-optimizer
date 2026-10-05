@@ -1,10 +1,56 @@
+import json
+
 import pandas as pd
 import streamlit as st
+from streamlit_js_eval import streamlit_js_eval
 
 from pokemon_team_optimizer import cli, config
 
+STORAGE_KEY = "pokemon-team-optimizer-inputs"
+FOSSIL_OPTIONS = ("all", "one", "none")
+GEN_OPTIONS = list(range(1, config.NGENS + 1))
+default_inputs = {
+    "legendaries": True,
+    "plegendaries": True,
+    "starters": True,
+    "fossils": "all",
+    "version": "nat",
+    "size_team": 6,
+    "gens": [],
+    "in_team": [],
+    "out_team": [],
+    "captured": [],
+}
+
 data_all = pd.read_csv(config.get_file_loc("nat"))
 all_pkmn_names = data_all["name"]
+
+# Restore the input parameters saved in the browser's local storage. The browser answers asynchronously:
+# the first run gets None, then the app reruns with the saved JSON ("" if nothing was saved yet).
+with st.sidebar:
+    saved_inputs = streamlit_js_eval(js_expressions=f"localStorage.getItem('{STORAGE_KEY}') ?? ''", key="load_inputs")
+if saved_inputs is not None and "inputs_restored" not in st.session_state:
+    st.session_state.inputs_restored = True
+    try:
+        restored_inputs = json.loads(saved_inputs) if saved_inputs else {}
+    except json.JSONDecodeError:
+        restored_inputs = {}
+    if isinstance(restored_inputs, dict):
+        for key in default_inputs.keys() & restored_inputs.keys():
+            st.session_state[key] = restored_inputs[key]
+for key, value in default_inputs.items():
+    st.session_state.setdefault(key, value)
+
+# Reset values the widgets would reject (e.g. from a save made by an older version of the app)
+if st.session_state.fossils not in FOSSIL_OPTIONS:
+    st.session_state.fossils = default_inputs["fossils"]
+if st.session_state.version not in config.list_games:
+    st.session_state.version = default_inputs["version"]
+if not isinstance(st.session_state.size_team, int) or not 1 <= st.session_state.size_team <= len(all_pkmn_names):
+    st.session_state.size_team = default_inputs["size_team"]
+st.session_state.gens = [gen for gen in st.session_state.gens if gen in GEN_OPTIONS]
+st.session_state.in_team = [name for name in st.session_state.in_team if name in set(all_pkmn_names)]
+st.session_state.out_team = [name for name in st.session_state.out_team if name in set(all_pkmn_names)]
 
 # Streamlit UI
 st.title("Pokemon Team Optimizer")
@@ -20,29 +66,47 @@ st.sidebar.html("""
           a {
             margin-right: 4px;
           }
+          /* Hide the invisible local storage components */
+          div[data-testid="stElementContainer"]:has(iframe[title*="streamlit_js_eval"]) {
+            display: none;
+          }
 </style>
 </a>
 """)
 
 st.sidebar.header("Input Parameters")
-legendaries = st.sidebar.toggle("Include legendaries", value=True)
-plegendaries = st.sidebar.toggle("Include pseudo-legendaries", value=True)
-starters = st.sidebar.toggle("Allow more than one starter?", value=True)
-fossils = st.sidebar.selectbox("Include fossils?", ("all", "one", "none"), index=0)
+legendaries = st.sidebar.toggle("Include legendaries", key="legendaries")
+plegendaries = st.sidebar.toggle("Include pseudo-legendaries", key="plegendaries")
+starters = st.sidebar.toggle("Allow more than one starter?", key="starters")
+fossils = st.sidebar.selectbox("Include fossils?", FOSSIL_OPTIONS, key="fossils")
 version = st.sidebar.selectbox(
     "Version restriction",
     config.list_games.keys(),
-    index=len(config.list_games.keys()) - 1,
     format_func=lambda x: config.list_games_names[x],
+    key="version",
 )
-size_team = st.sidebar.number_input("Size of the team: ", min_value=1, max_value=len(all_pkmn_names), value=6)
-gens = st.sidebar.multiselect("What generations should be included (empty means all)?", range(1, config.NGENS + 1))
-in_team = st.sidebar.multiselect("Pokemon to include:", all_pkmn_names)
-out_team = st.sidebar.multiselect("Pokemon to exclude:", all_pkmn_names)
+size_team = st.sidebar.number_input("Size of the team: ", min_value=1, max_value=len(all_pkmn_names), key="size_team")
+gens = st.sidebar.multiselect("What generations should be included (empty means all)?", GEN_OPTIONS, key="gens")
+in_team = st.sidebar.multiselect("Pokemon to include:", all_pkmn_names, key="in_team")
+out_team = st.sidebar.multiselect("Pokemon to exclude:", all_pkmn_names, key="out_team")
+# The captured Pokemon depend on the version, drop the ones not available in the selected one
+version_pkmn_names = pd.read_csv(config.get_file_loc(version))["name"]
+st.session_state.captured = [name for name in st.session_state.captured if name in set(version_pkmn_names)]
 captured = st.sidebar.multiselect(
     "Captured Pokemon to build the team from (empty means all):",
-    pd.read_csv(config.get_file_loc(version))["name"],
+    version_pkmn_names,
+    key="captured",
 )
+
+# Save the input parameters in the browser's local storage, once the saved ones have been restored
+if st.session_state.get("inputs_restored"):
+    inputs_json = json.dumps({key: st.session_state[key] for key in default_inputs})
+    with st.sidebar:
+        streamlit_js_eval(
+            js_expressions=f"localStorage.setItem('{STORAGE_KEY}', {json.dumps(inputs_json)})",
+            want_output=False,
+            key="save_inputs",
+        )
 
 
 if st.button("Solve"):
@@ -80,8 +144,9 @@ if st.button("Solve"):
             width=500,
             disabled=True,
         )
-        st.write(
-            resistances[["Minimal factor", "Optimal defender"]].transpose(),
+        # Transposed columns mix factors and names, display them as text so Arrow can serialize them
+        st.dataframe(
+            resistances[["Minimal factor", "Optimal defender"]].transpose().astype(str),
             width=500,
         )
 

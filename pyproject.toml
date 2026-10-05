@@ -19,7 +19,8 @@ pokemon-team-optimizer-app = "pokemon_team_optimizer.app:main"
 
 [project.optional-dependencies]
 app = [
-    "streamlit>=1.33,<1.50",  # needs st.html; 1.50 rejects st.write(..., width=)
+    "streamlit>=1.33",  # needs st.html
+    "streamlit-js-eval>=1.0",
 ]
 notebooks = [
     "beautifulsoup4>=4.9",
