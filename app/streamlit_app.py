@@ -1,8 +1,7 @@
-import streamlit as st
-from pokemon_team_optimizer import cli
-from pokemon_team_optimizer import config
 import pandas as pd
+import streamlit as st
 
+from pokemon_team_optimizer import cli, config
 
 data_all = pd.read_csv(config.get_file_loc("nat"))
 all_pkmn_names = data_all["name"]
@@ -14,8 +13,7 @@ st.write(
     " Teams are built under the constraints set in the sidebar in order to maximize the base total"
     " and such that every type can be resisted by at least one Pokemon in the team."
 )
-st.sidebar.html(
-    """
+st.sidebar.html("""
 <a href="https://github.com/NicolasChagnet/pokemon-team-optimizer">
 <img alt="github" src="https://badgen.net/badge/icon/github?icon=github&label=NicolasChagnet">
 <style>
@@ -24,8 +22,7 @@ st.sidebar.html(
           }
 </style>
 </a>
-"""
-)
+""")
 
 st.sidebar.header("Input Parameters")
 legendaries = st.sidebar.toggle("Include legendaries")
