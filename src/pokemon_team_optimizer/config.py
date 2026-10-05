@@ -45,7 +45,7 @@ list_pseudo_legendaries = [
     "goodra",
     "kommo-o",
     "dragapult",
-    "hisuian Goodra",
+    "hisuian goodra",
     "baxcalibur",
 ]
 
@@ -231,6 +231,9 @@ list_games = {
     "swsh": {"url": "game/sword-shield", "gen": 8},
     "bdsp": {"url": "game/brilliant-diamond-shining-pearl", "gen": 8},
     "sv": {"url": "game/scarlet-violet", "gen": 9},
+    "champ_ma": {"url": "https://www.serebii.net/pokemonchampions/recruit/regularrosterm-a.shtml", "gen": 9},
+    "champ_mb": {"url": "https://www.serebii.net/pokemonchampions/recruit/regularrosterm-b.shtml", "gen": 9},
+    "champ_mc": {"url": "https://www.serebii.net/pokemonchampions/recruit/regularrosterm-c.shtml", "gen": 9},
     "nat": {"url": "national", "gen": 9},
 }
 list_games_names = {
@@ -250,6 +253,9 @@ list_games_names = {
     "swsh": "Sword/Shield",
     "bdsp": "Brilliant Diamond/Shining Pearl",
     "sv": "Scarlet/Violet",
+    "champ_ma": "Champions Regular Roster M-A",
+    "champ_mb": "Champions Regular Roster M-B",
+    "champ_mc": "Champions Regular Roster M-C",
     "nat": "National",
 }
 NGENS = 9
