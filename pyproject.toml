@@ -14,6 +14,9 @@ dependencies = [
     "PuLP>=2.1,<4",  # PuLP 4 removed LpVariable.dicts
 ]
 
+[project.scripts]
+pokemon-team-optimizer-app = "pokemon_team_optimizer.app:main"
+
 [project.optional-dependencies]
 app = [
     "streamlit>=1.33,<1.50",  # needs st.html; 1.50 rejects st.write(..., width=)

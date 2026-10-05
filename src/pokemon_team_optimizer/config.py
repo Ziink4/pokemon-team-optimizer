@@ -253,9 +253,9 @@ list_games_names = {
     "swsh": "Sword/Shield",
     "bdsp": "Brilliant Diamond/Shining Pearl",
     "sv": "Scarlet/Violet",
-    "champ_ma": "Champions Regular Roster M-A",
-    "champ_mb": "Champions Regular Roster M-B",
-    "champ_mc": "Champions Regular Roster M-C",
+    "champ_ma": "Champions M-A",
+    "champ_mb": "Champions M-B",
+    "champ_mc": "Champions M-C",
     "nat": "National",
 }
 NGENS = 9

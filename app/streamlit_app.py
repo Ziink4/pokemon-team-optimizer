@@ -25,10 +25,10 @@ st.sidebar.html("""
 """)
 
 st.sidebar.header("Input Parameters")
-legendaries = st.sidebar.toggle("Include legendaries")
-plegendaries = st.sidebar.toggle("Include pseudo-legendaries")
-starters = st.sidebar.toggle("Allow more than one starter?")
-fossils = st.sidebar.selectbox("Include fossils?", ("all", "one", "none"), index=2)
+legendaries = st.sidebar.toggle("Include legendaries", value=True)
+plegendaries = st.sidebar.toggle("Include pseudo-legendaries", value=True)
+starters = st.sidebar.toggle("Allow more than one starter?", value=True)
+fossils = st.sidebar.selectbox("Include fossils?", ("all", "one", "none"), index=0)
 version = st.sidebar.selectbox(
     "Version restriction",
     config.list_games.keys(),

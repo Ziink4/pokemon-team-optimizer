@@ -30,7 +30,7 @@ $ pip install -e ".[app]"     # + Streamlit app
 $ pip install -e ".[notebooks]"  # + dependencies for the notebooks
 ```
 
-Run the Streamlit app locally with `streamlit run app/streamlit_app.py`.
+Run the Streamlit app locally with `pokemon-team-optimizer-app` (or `uv run --extra app pokemon-team-optimizer-app`). Extra arguments are forwarded to `streamlit run`, e.g. `pokemon-team-optimizer-app --server.port 8502`.
 
 Find the optimized team with `python3 -m pokemon_team_optimizer.cli`:
 ```console
