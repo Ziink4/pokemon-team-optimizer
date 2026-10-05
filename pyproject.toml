@@ -10,21 +10,24 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 dependencies = [
-    "numpy",
-    "pandas==2.2.2",
-    "PuLP==2.8.0",
+    "pandas>=1.4",
+    "PuLP>=2.1,<4",  # PuLP 4 removed LpVariable.dicts
 ]
 
 [project.optional-dependencies]
 app = [
-    "streamlit==1.35.0",
+    "streamlit>=1.33,<1.50",  # needs st.html; 1.50 rejects st.write(..., width=)
 ]
 notebooks = [
-    "beautifulsoup4==4.12.3",
-    "ipython==8.12.3",
-    "ipywidgets==8.1.3",
-    "matplotlib==3.9.0",
-    "pokebase==1.4.1",
-    "Requests==2.32.3",
-    "seaborn==0.13.2",
+    "beautifulsoup4>=4.9",
+    "ipykernel>=6",
+    "ipython>=8",
+    "ipywidgets>=8",
+    "matplotlib>=3.5",
+    "notebook>=7",
+    "numpy>=1.21.3",
+    "pip",
+    "pokebase>=1.3",
+    "requests>=2.25",
+    "seaborn>=0.11",
 ]
